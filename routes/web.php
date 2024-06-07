@@ -26,5 +26,5 @@ Route::post('/diagnosis', [DiagnosisController::class, 'submitDiagnosis'])->name
 Route::get('/hitung-diagnosis/{id}', [DiagnosisController::class, 'calculateCF'])->name('diagnosis.calculate');
 Route::get('/hasil-diagnosis/{id}', [DiagnosisController::class, 'showDiagnosisResult'])->name('diagnosis.result');
 
-
+Route::get('/home', function () { return view('dashboard'); })->name('home');
 

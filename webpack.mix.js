@@ -15,3 +15,6 @@ mix.js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
         //
     ]);
+
+mix.css('resources/css/dashboard.css', 'public/css');
+mix.js('resources/js/dashboard.js', 'public/js');
