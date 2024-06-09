@@ -23,6 +23,9 @@ body {
     display: flex;
 }
 
+main {
+    padding: 4px 4px;
+}
 
 .main {
     display: flex;
@@ -32,7 +35,7 @@ body {
     overflow: hidden;
     transition: all 0.35s ease-in-out;
     min-width: 0;
-    padding: 20px;
+    padding: 5px;
 }
 
 #sidebar {
@@ -44,12 +47,14 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    position: sticky;
+    left: 0;
+    top: 0;
 }
 
 #sidebar.expand {
     width: 260px;
     min-width: 260px;
-
 }
 
 .toggle-btn {
@@ -64,13 +69,14 @@ body {
     color: #0e2238;
 }
 
+
 .sidebar-logo {
     margin: auto 0;
 }
 
 .sidebar-logo a {
     color: #0e2238;
-    font-size: 1.15rem;
+    font-size: 1.5rem;
     font-weight: 600;
 }
 
@@ -107,6 +113,7 @@ a.sidebar-link {
     white-space: nowrap;
     border-left: 3px solid transparent;
 }
+
 
 .sidebar-link i,
 .dropdown-item i {
@@ -174,45 +181,41 @@ a.sidebar-link:hover {
 
 /* hero */
 .hero {
-    background-color: #F0F2F5;
-    padding: 50px 0; /* Adjust padding as needed */
-    border-radius: 20px; /* Set the desired rounded corners */
+    background-color: #fff;
+    padding: 10px 0; /* Sesuaikan padding sesuai kebutuhan */
+    border-radius: 20px; /* Atur sudut bulat yang diinginkan */
   }
 
   .hero-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1000px; /* Set a maximum width for the container */
-    margin: 0 auto; /* Center the container horizontally */
-  }
-
-  .hero-image {
-    width: 50%; /* Adjust image width as needed */
-    border-radius: 20px; /* Apply rounded corners to the image */
-  }
-
-  /* Responsive image for smaller screens */
-  @media (max-width: 768px) {
-    .hero-image {
-      width: 100%;
-    }
+    max-width: 1000px;
+    margin: 5px auto;
   }
 
   .hero-content {
-    text-align: center;
-    color: #333;
+    text-align: left;
+    padding: 20px;
+    margin-left: 25px;
+    color: #333; /* Warna teks */
   }
 
   .hero-content h1 {
-    font-size: 3em; /* Adjust heading size */
-    margin-bottom: 15px; /* Add some margin below the heading */
+    font-size: 2em;
+    font-weight: 800;
+    margin-bottom: 15px;
+  }
+
+  .hero-image {
+    width: 40%;
+    border-radius: 20px;
   }
 
   .hero-content p {
-    font-size: 1.2em; /* Adjust paragraph font size */
-    line-height: 1.5; /* Adjust line height for better readability */
-    margin-bottom: 20px; /* Add some margin below the paragraph */
+    font-size: 1.2em;
+    line-height: 1.5;
+    margin-bottom: 20px;
   }
 
   .hero-content a {
@@ -227,5 +230,123 @@ a.sidebar-link:hover {
   .hero-content a:hover {
     background-color: #0069d9;
   }
+
+  .explore-blogs {
+    background-color: #fff;
+    padding: 10px 20px; /* Sesuaikan padding sesuai kebutuhan */
+    border-radius: 20px;
+    margin: 5px auto;
+  }
+
+  .explore-blogs h2{
+    font-weight: 800;
+    font-size: 1.5em;
+    margin: 20px 10px;
+  }
+
+  .blog-card {
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+
+  .blog-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .blog-card img {
+    border-radius: 5px 5px 0 0; /* Rounded top corners */
+    width: 100%;
+    height: 140px; /* Adjust the height as needed */
+    -o-object-fit: cover;
+       object-fit: cover; /* Ensure the image covers the entire space */
+}
+
+.blog-card .card-title {
+    font-size: 1.2rem; /* Ukuran font lebih kecil untuk judul */
+    margin-bottom: 10px; /* Jarak antara judul dan teks */
+}
+
+.blog-card .card-text {
+    font-size: 0.9rem; /* Ukuran font lebih kecil untuk teks */
+    line-height: 1.5; /* Jarak antara baris */
+    margin-bottom: 15px; /* Jarak antara teks dan tombol */
+}
+
+.blog-card .btn-primary {
+    font-size: 0.8rem; /* Ukuran font lebih kecil untuk tombol */
+    padding: 8px 16px; /* Mengurangi padding tombol */
+}
+
+
+
+  @media screen and (max-width: 768px) {
+
+    main{
+      padding: 0;
+      margin: 0;
+    }
+
+    .main-container {
+      padding: 0;
+      margin: 0;
+    }
+
+    .main {
+      padding: 0;
+      margin: 0;
+    }
+
+    .hero {
+      border-radius: 0;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hero-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+        margin: 0 auto;
+      }
+
+      .hero {
+        border-radius: 0;
+        padding: 0;
+      }
+
+      .hero-content {
+        text-align: center;
+        padding: 20px;
+        margin-left: 0;
+        margin: 20px auto;
+      }
+
+      .hero-content h1 {
+        font-size: 1.5em; /* Ukuran font lebih kecil untuk layar kecil */
+        margin-bottom: 10px; /* Mengurangi margin bottom untuk h1 */
+      }
+
+      .hero-content p {
+        font-size: 1em; /* Ukuran font lebih kecil untuk paragraf */
+        margin-bottom: 15px; /* Mengurangi margin bottom untuk paragraf */
+      }
+
+      .hero-image {
+        width: 100%;
+      }
+
+      .hero-content a {
+        padding: 8px 16px; /* Mengurangi padding tombol */
+        font-size: 0.9em; /* Ukuran font lebih kecil untuk tombol */
+      }
+
+      .explore-blogs {
+        border-radius: 0px;
+        margin: 5px auto;
+      }
+
+    }
 
 

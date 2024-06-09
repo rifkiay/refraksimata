@@ -17,7 +17,7 @@ class DiagnosisController extends Controller
     public function showForm()
     {
         $gejalas = DB::table('tb_gejala')->get();
-        return view('diagnosis.form', compact('gejalas'));
+        return view('form_diagnosis', compact('gejalas'));
     }
 
     public function submitDiagnosis(Request $request)
@@ -47,7 +47,7 @@ class DiagnosisController extends Controller
         }
 
         // Membersihkan nilai-nilai md dari nilai kosong
-        $mdValues = array_filter($validatedData['md'], function($value) {
+        $mdValues = array_filter($validatedData['md'], function ($value) {
             return trim($value) !== ''; // Memastikan nilai tidak kosong setelah dipangkas
         });
 
@@ -98,8 +98,7 @@ class DiagnosisController extends Controller
         }
         $penyakitData = Penyakit::all();
 
-
-        //Mulai perhitungan CF
+        // Mulai perhitungan CF
         $gejalaData = Tmp::all();
 
         // Inisialisasi array untuk menyimpan CF per penyakit
@@ -107,6 +106,11 @@ class DiagnosisController extends Controller
 
         // Hitung Certainty Factor untuk setiap gejala dan kelompokkan berdasarkan penyakit
         foreach ($gejalaData as $gejala) {
+            // Abaikan gejala dengan md = 0
+            if ($gejala->md == 0) {
+                continue;
+            }
+
             $kodePenyakit = $gejala->kode_penyakit;
             $MB = $gejala->mb;
             $MD = $gejala->md;
@@ -119,7 +123,6 @@ class DiagnosisController extends Controller
             }
         }
 
-
         // Hitung persentase CF untuk setiap penyakit
         $percentageCF_per_penyakit = [];
         foreach ($CF_per_penyakit as $kodePenyakit => $value) {
@@ -131,7 +134,7 @@ class DiagnosisController extends Controller
         $kodePenyakitTerbesar = array_search($maxCF, $percentageCF_per_penyakit);
         $namaPenyakitTerbesar = $penyakitData->where('kode_penyakit', $kodePenyakitTerbesar)->first()->nama_penyakit;
 
-        // simpan semua hasil
+        // Simpan semua hasil
         $semua_hasil = [];
         foreach ($percentageCF_per_penyakit as $kodePenyakit => $percentage) {
             $namaPenyakit = $penyakitData->where('kode_penyakit', $kodePenyakit)->first()->nama_penyakit;
@@ -146,11 +149,12 @@ class DiagnosisController extends Controller
         $pasien->semua_hasil = $semua_hasil_string;
         $pasien->save();
 
-        // hapus data di tb_tmp
+        // Hapus data di tb_tmp
         Tmp::truncate();
 
         return redirect()->route('diagnosis.result', ['id' => $id]);
     }
+
 
     public function showDiagnosisResult($id)
     {
