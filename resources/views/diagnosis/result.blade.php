@@ -3,63 +3,161 @@
 <head>
     <title>Certainty Factor Result</title>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
         }
 
-        table, th, td {
-            border: 1px solid black;
+        .container {
+            margin: 20px;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .patient-info-table {
+            width: auto;
+            border-collapse: collapse;
+            background-color: white;
+            margin-bottom: 20px;
+        }
+
+        .patient-info-table, .patient-info-table th, .patient-info-table td {
+            border: 1px solid #ddd;
             padding: 8px;
+            font-size: 14px;
+        }
+
+        .patient-info-table th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .patient-info-table td {
+            background-color: #f9f9f9;
+        }
+
+        .disease-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+        }
+
+        .disease-table, .disease-table th, .disease-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .disease-table th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .disease-table td {
+            background-color: #f9f9f9;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007BFF;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .left-align {
+            text-align: left;
+        }
+
+        .center-align {
             text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Certainty Factor Result</h1>
-    <h2>Informasi Pasien:</h2>
-    <ul>
-        <li><strong>Nama:</strong> {{ $pasien->nama }}</li>
-        <li><strong>Kode Pasien:</strong> {{ $pasien->kode_pasien }}</li>
-        <li><strong>Gejala yang Dipilih:</strong>
-            <ul>
-                @foreach ($nama_gejala as $gejala)
-                    <li>{{ $gejala }}</li>
-                @endforeach
-            </ul>
-        </li>
-    </ul>
+    <header>
+        <h1>Certainty Factor Result</h1>
+    </header>
+    <div class="container">
+        <h2>Informasi Pasien:</h2>
+        <table class="patient-info-table">
+            <tr>
+                <th>Nama</th>
+                <td class="left-align">{{ $pasien->nama }}</td>
+            </tr>
+            <tr>
+                <th>Kode Pasien</th>
+                <td class="left-align">{{ $pasien->kode_pasien }}</td>
+            </tr>
+            <tr>
+                <th>Gejala yang Dipilih</th>
+                <td class="left-align">
+                    <table style="width: 100%; border: none;">
+                        <tr>
+                            @foreach ($nama_gejala as $index => $gejala)
+                                @if ($index % 2 == 0 && $index != 0)
+                                    </tr><tr>
+                                @endif
+                                {{-- <td style="border: none;">{{ $gejala }}</td> --}}
+                                <td>{{ $gejala }}</td>
+                            @endforeach
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
 
-    <h2>Certainty Factor for Each Disease:</h2>
-    <table>
-        <tr>
-            <th>Kode Penyakit</th>
-            <th>Nama Penyakit</th>
-            <th>Certainty Factor (CF)</th>
-            <th>Percentage (%)</th>
-        </tr>
-        @foreach ($penyakitData as $penyakit)
-            @php
-                // Extracting the disease name and percentage correctly
-                preg_match('/^(.+?)\s+(\d+(\.\d+)?)%$/', collect(explode(', ', $pasien->semua_hasil))->firstWhere(fn($hasil) => str_contains($hasil, $penyakit->nama_penyakit)), $matches);
-                $percentage = isset($matches[2]) ? (float) $matches[2] : 0;
-            @endphp
-            @if ($penyakit->kode_penyakit && $penyakit->nama_penyakit)
-                <tr>
-                    <td>{{ $penyakit->kode_penyakit }}</td>
-                    <td>{{ $penyakit->nama_penyakit }}</td>
-                    <td>{{ $percentage / 100 }}</td>
-                    <td>{{ $percentage }}%</td>
-                </tr>
-            @endif
-        @endforeach
-    </table>
+        <h2>Certainty Factor for Each Disease:</h2>
+        <table class="disease-table">
+            <tr>
+                <th>Kode Penyakit</th>
+                <th>Nama Penyakit</th>
+                <th>Certainty Factor (CF)</th>
+                <th>Percentage (%)</th>
+            </tr>
+            @foreach ($penyakitData as $penyakit)
+                @php
+                    // Extracting the disease name and percentage correctly
+                    preg_match('/^(.+?)\s+(\d+(\.\d+)?)%$/', collect(explode(', ', $pasien->semua_hasil))->firstWhere(fn($hasil) => str_contains($hasil, $penyakit->nama_penyakit)), $matches);
+                    $percentage = isset($matches[2]) ? (float) $matches[2] : 0;
+                @endphp
+                @if ($penyakit->kode_penyakit && $penyakit->nama_penyakit)
+                    <tr>
+                        <td class="center-align">{{ $penyakit->kode_penyakit }}</td>
+                        <td class="center-align">{{ $penyakit->nama_penyakit }}</td>
+                        <td class="center-align">{{ $percentage / 100 }}</td>
+                        <td class="center-align">{{ $percentage }}%</td>
+                    </tr>
+                @endif
+            @endforeach
+        </table>
 
-    <br>
-    <h2>Kesimpulan:</h2>
-    <p>Berdasarkan hasil diagnosis, penyakit yang paling mungkin diderita pasien adalah: {{ $pasien->hasil }} ({{ $pasien->persentase_hasil }}).</p>
+        <br>
+        <h2>Kesimpulan:</h2>
+        <p>Berdasarkan hasil diagnosis, penyakit yang paling mungkin diderita pasien adalah: {{ $pasien->hasil }} ({{ $pasien->persentase_hasil }}).</p>
 
-    <br>
-    <a href="{{ route('diagnosis.form') }}">Kembali ke Halaman Form Diagnosis</a>
+        <br>
+        <a href="{{ route('diagnosis.form') }}" class="button">Kembali ke Halaman Form Diagnosis</a>
+    </div>
 </body>
 </html>
