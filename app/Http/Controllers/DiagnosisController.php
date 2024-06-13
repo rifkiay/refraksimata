@@ -107,14 +107,14 @@ class DiagnosisController extends Controller
         // Hitung Certainty Factor untuk setiap gejala dan kelompokkan berdasarkan penyakit
         foreach ($gejalaData as $gejala) {
             // Abaikan gejala dengan md = 0
-            if ($gejala->md == 0) {
-                continue;
-            }
+            // if ($gejala->md == 0) {
+            //     continue;
+            // }
 
             $kodePenyakit = $gejala->kode_penyakit;
             $MB = $gejala->mb;
             $MD = $gejala->md;
-            $CF = $MB - $MD;
+            $CF = $MB * $MD;
 
             if (!isset($CF_per_penyakit[$kodePenyakit])) {
                 $CF_per_penyakit[$kodePenyakit] = $CF;

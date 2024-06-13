@@ -109,7 +109,7 @@
                 <th>Kode Pasien</th>
                 <td class="left-align">{{ $pasien->kode_pasien }}</td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <th>Gejala yang Dipilih</th>
                 <td class="left-align">
                     <table style="width: 100%; border: none;">
@@ -118,13 +118,12 @@
                                 @if ($index % 2 == 0 && $index != 0)
                                     </tr><tr>
                                 @endif
-                                {{-- <td style="border: none;">{{ $gejala }}</td> --}}
                                 <td>{{ $gejala }}</td>
                             @endforeach
                         </tr>
                     </table>
                 </td>
-            </tr>
+            </tr> --}}
         </table>
 
         <h2>Certainty Factor for Each Disease:</h2>
