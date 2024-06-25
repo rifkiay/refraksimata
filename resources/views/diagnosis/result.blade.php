@@ -151,6 +151,24 @@
             @endforeach
         </table>
 
+        <h2>HOG Visualization</h2>
+        <div id="imageContainer">
+            {{-- <img id="originalImage" src="{{ asset($pasien->gambar) }}" style="width: 400px;"> --}}
+            @if ($hogImagePath)
+                <img id="hogImage" src="{{ asset($hogImagePath) }}">
+            @endif
+            <h3>Prediksi HOG + SVM: {!! $predictedLabel !!}</h3>
+
+            @if ($huMomentsPath)
+            <img id="huMomentsImage" src="{{ asset($huMomentsPath) }}">
+                {{-- You can adjust the image path as needed --}}
+            @endif
+            <h3>Prediksi Hu Moment + SVM: {!! $predictedLabelHu !!}</h3>
+        </div>
+
+
+
+
         <br>
         <h2>Kesimpulan:</h2>
         <p>Berdasarkan hasil diagnosis, penyakit yang paling mungkin diderita pasien adalah: {{ $pasien->hasil }} ({{ $pasien->persentase_hasil }}).</p>
@@ -158,5 +176,6 @@
         <br>
         <a href="{{ route('diagnosis.form') }}" class="button">Kembali ke Halaman Form Diagnosis</a>
     </div>
+
 </body>
 </html>

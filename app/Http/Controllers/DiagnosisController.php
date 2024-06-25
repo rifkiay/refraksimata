@@ -10,6 +10,10 @@ use App\Models\TMP;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Intervention\Image\Facades\Image;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+
 
 
 class DiagnosisController extends Controller
@@ -60,6 +64,26 @@ class DiagnosisController extends Controller
         $pasien->tgl_diagnosa = now();
         $pasien->save();
 
+        // nama di databasenya dengan rute penyimpanan jika pusing
+        if ($request->hasFile('gambar')) {
+            $image = $request->file('gambar');
+            $namaPasien = $validatedData['nama'];
+
+            // Direktori penyimpanan di storage
+            $storagePath = 'public/images/' . $namaPasien;
+
+            // Simpan gambar ke storage
+            $path = $image->storeAs($storagePath, $image->getClientOriginalName());
+
+            // Ambil path relatif dari storage
+            $path = str_replace('public', 'storage', $path);
+
+            // Simpan path ke database
+            $pasien->gambar = $path;
+            $pasien->save();
+        }
+
+
         // Ambil data gejala_dipilih dan md
         $gejalaDipilih = explode(',', $pasien->gejala_dipilih);
         $mdValues = explode(',', $pasien->md);
@@ -106,10 +130,6 @@ class DiagnosisController extends Controller
 
         // Hitung Certainty Factor untuk setiap gejala dan kelompokkan berdasarkan penyakit
         foreach ($gejalaData as $gejala) {
-            // Abaikan gejala dengan md = 0
-            // if ($gejala->md == 0) {
-            //     continue;
-            // }
 
             $kodePenyakit = $gejala->kode_penyakit;
             $MB = $gejala->mb;
@@ -172,7 +192,62 @@ class DiagnosisController extends Controller
 
         $penyakitData = Penyakit::orderBy('kode_penyakit')->get();
 
-        return view('diagnosis.result', compact('pasien', 'penyakitData', 'nama_gejala'));
-    }
+        // Ambil path ke gambar dari request
+        $imagePath = $pasien->gambar;
+        $patient_name  = $pasien->nama;
 
+        // Jalankan skrip Python untuk prediksi dan visualisasi HOG
+        $command = ['python', 'python/main.py', $imagePath, $patient_name];
+        // Jalankan skrip Python untuk prediksi dan visualisasi hu moment
+        $command1 = ['python', 'python/humoment.py', $imagePath, $patient_name];
+
+        $process = new Process($command);
+        $process1 = new Process($command1);
+        $process->run();
+        $process1->run();
+
+        // Tangani hasil dari proses
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+        if (!$process1->isSuccessful()) {
+            throw new ProcessFailedException($process1);
+        }
+
+        // Ambil output dari proses Python
+        $output = $process->getOutput();
+        // dd($output);
+        $output1 = $process1->getOutput();
+        // dd($output1);
+
+        $predictedLabel = '';
+        $predictedLabelHu = '';
+        $hogImagePath = '';
+        $huMomentsPath = '';
+
+        // Parse output from $output (assuming it contains HOG image path and predicted label)
+        $lines = explode("\n", trim($output));
+        foreach ($lines as $line) {
+            if (strpos($line, 'Predicted Label:') !== false) {
+                $predictedLabel = str_replace('Predicted Label:', '', $line);
+            } elseif (strpos($line, 'HOG Image Path:') !== false) {
+                $hogImagePath = str_replace('HOG Image Path:', '', $line);
+                $hogImagePath = trim($hogImagePath); // Trim untuk menghilangkan spasi
+            }
+        }
+
+        // Handle output from $output1 (assuming it contains Hu moments path and predicted label)
+        $lines1 = explode("\n", trim($output1));
+        foreach ($lines1 as $line) {
+            if (strpos($line, 'Predicted Label:') !== false) {
+                $predictedLabelHu = str_replace('Predicted Label:', '', $line);
+            } elseif (strpos($line, 'Hu Moments Path:') !== false) {
+                $huMomentsPath = str_replace('Hu Moments Path:', '', $line);
+                $huMomentsPath = trim($huMomentsPath); // Trim untuk menghilangkan spasi
+            }
+        }
+
+        // Pass data to the view
+        return view('diagnosis.result', compact('pasien', 'penyakitData', 'nama_gejala', 'predictedLabel', 'hogImagePath', 'predictedLabelHu', 'huMomentsPath'));
+    }
 }
