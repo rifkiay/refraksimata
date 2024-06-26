@@ -151,19 +151,19 @@
             @endforeach
         </table>
 
-        <h2>HOG Visualization</h2>
+        <h2>Hu Moment</h2>
         <div id="imageContainer">
-            {{-- <img id="originalImage" src="{{ asset($pasien->gambar) }}" style="width: 400px;"> --}}
+            {{-- <img id="originalImage" src="{{ asset($pasien->gambar) }}" style="width: 400px;">
             @if ($hogImagePath)
                 <img id="hogImage" src="{{ asset($hogImagePath) }}">
             @endif
-            <h3>Prediksi HOG + SVM: {!! $predictedLabel !!}</h3>
-
+            <h3>Prediksi HOG + SVM: {!! $predictedLabel !!}</h3> --}}
+            <img id="originalImage" src="{{ asset($pasien->gambar) }}" style="width: 500px;">
             @if ($huMomentsPath)
+
             <img id="huMomentsImage" src="{{ asset($huMomentsPath) }}">
                 {{-- You can adjust the image path as needed --}}
             @endif
-            <h3>Prediksi Hu Moment + SVM: {!! $predictedLabelHu !!}</h3>
         </div>
 
 
