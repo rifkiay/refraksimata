@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -65,20 +66,32 @@ class DiagnosisController extends Controller
         $pasien->save();
 
         // nama di databasenya dengan rute penyimpanan jika pusing
-        if ($request->hasFile('gambar')) {
-            $image = $request->file('gambar');
+        if ($request->file('gambar')) {
+            // create image manager with desired driver
+            $manager = new ImageManager(new Driver());
+            // Read and resize the image
+            $image = $manager->read($request->file('gambar')->getRealPath())->resize(320, 240);
+
+            // Get original file name
+            $originalName = $request->file('gambar')->getClientOriginalName();
+
+            // Directory for storage (inside storage/app/public)
             $namaPasien = $validatedData['nama'];
-
             // Direktori penyimpanan di storage
-            $storagePath = 'public/images/' . $namaPasien;
+            $storagePath = 'app/public/images/' . $namaPasien;
 
-            // Simpan gambar ke storage
-            $path = $image->storeAs($storagePath, $image->getClientOriginalName());
+            // Ensure the directory exists, create it if not
+            if (!file_exists(storage_path($storagePath))) {
+                mkdir(storage_path($storagePath), 0755, true);
+            }
 
-            // Ambil path relatif dari storage
-            $path = str_replace('public', 'storage', $path);
+            // Save the resized image to storage
+            $image->save(storage_path($storagePath . '/' . $originalName));
 
-            // Simpan path ke database
+            // Relative storage path
+            $path = 'storage/images/' . $namaPasien . '/' . $originalName;
+
+            // Save path to database
             $pasien->gambar = $path;
             $pasien->save();
         }
