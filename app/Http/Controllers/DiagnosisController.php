@@ -10,7 +10,7 @@ use App\Models\TMP;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -248,6 +248,6 @@ class DiagnosisController extends Controller
         }
 
         // Pass data to the view
-        return view('diagnosis.result', compact('pasien', 'penyakitData', 'nama_gejala', 'predictedLabel', 'hogImagePath', 'predictedLabelHu', 'huMomentsPath'));
+        return view('result', compact('pasien', 'penyakitData', 'nama_gejala', 'predictedLabel', 'hogImagePath', 'predictedLabelHu', 'huMomentsPath'));
     }
 }

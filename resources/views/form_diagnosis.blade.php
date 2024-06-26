@@ -12,29 +12,18 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-
         .form-container h1 {
             font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            color: #0c0c0c;
+            margin-bottom: 30px;
+            font-weight: 700;
+            color: #343434;
         }
 
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             font-weight: bold;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="number"] {
-            margin-bottom: 15px;
-            max-width: 300px;
-        }
-
-        .form-group .form-check label {
-            margin-left: 5px;
         }
 
 
@@ -55,7 +44,6 @@
             font-weight: 700;
             color: #343434;
         }
-
 
 
         .survey-options button {
@@ -94,13 +82,68 @@
             text-decoration: underline;
         }
 
+
         .survey-step {
             display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
         }
 
         .survey-step.active {
             display: block;
+            opacity: 1;
         }
+
+        @keyframes buttonSelect {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .button-animate {
+            animation: buttonSelect 0.3s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(2%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOut {
+            0% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(-2%);
+            }
+        }
+
+        .survey-step.slide-in {
+            animation: slideIn 0.5s ease-in-out forwards;
+        }
+
+        .survey-step.slide-out {
+            animation: slideOut 0.5s ease-in-out forwards;
+        }
+
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -143,66 +186,112 @@
         <div class="mr-20">
             <h1>Silahkan Isi Form Kuisioner</h1>
         </div>
-        <div class="fluid-container d-flex justify-content-center">
-            <form action="{{ route('diagnosis.submit') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="form-group">
-                    <label for="nama">Nama Lengkap</label>
-                    <input type="text" class="form-control" id="nama" name="nama" required>
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="col-xxl">
+            <div class="card mb-4">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0">Form Certainty Factor</h5> <small class="text-muted float-end">EyeQ</small>
                 </div>
-                <div class="form-group">
-                    <label>Jenis Kelamin</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="male" name="jenis_kelamin" value="1"
-                            required>
-                        <label class="form-check-label" for="male">Laki-laki</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="female" name="jenis_kelamin" value="2"
-                            required>
-                        <label class="form-check-label" for="female">Perempuan</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="umur">Umur</label>
-                    <input type="number" class="form-control" id="umur" name="umur" required>
-                </div>
-                <div class="form-group">
-                    <label for="gejala">Tanda/Gejala yang dirasakan</label>
-                    <div id="survey-container" class="survey-container">
-                        @foreach ($gejalas as $gejala)
-                            <div class="survey-step">
-                                <h2>{{ $gejala->nama_gejala }}</h2>
-                                <div class="survey-options">
-                                    <button type="button" class="btn btn-primary" data-value="0">Tidak</button>
-                                    <button type="button" class="btn btn-primary" data-value="0.2">Tidak Tahu</button>
-                                    <button type="button" class="btn btn-primary" data-value="0.4">Sedikit Yakin</button>
-                                    <button type="button" class="btn btn-primary" data-value="0.6">Cukup Yakin</button>
-                                    <button type="button" class="btn btn-primary" data-value="0.8">Yakin</button>
-                                    <button type="button" class="btn btn-primary" data-value="1">Sangat Yakin</button>
+                <div class="card-body">
+                    <form action="{{ route('diagnosis.submit') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label" for="basic-icon-default-fullname">Nama Lengkap</label>
+                            <div class="col-sm-10">
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control" id="basic-icon-default-fullname"
+                                        placeholder="John Doe" aria-label="John Doe"
+                                        aria-describedby="basic-icon-default-fullname2" name="nama" required>
                                 </div>
-                                <input type="hidden" name="gejala_dipilih[]" value="{{ $gejala->kode_gejala }}">
-                                <input type="hidden" name="md[{{ $gejala->kode_gejala }}]" class="selected-value">
                             </div>
-                        @endforeach
-                        <div class="survey-footer mt-4">
-                            <p id="prev">Kembali</p>
-                            <span id="question-number">1 dari {{ count($gejalas) }} Pertanyaan</span>
-                            {{-- <p id="next">Selanjutnya</p> --}}
                         </div>
-                    </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label" for="basic-icon-default-company">Umur</label>
+                            <div class="col-sm-10">
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-company2" class="input-group-text"><i
+                                            class="fa-solid fa-list-ol"></i></span>
+                                    <input type="text" id="basic-icon-default-company" class="form-control"
+                                        placeholder="AGE Example : 17" aria-label="AGE Example : 17"
+                                        aria-describedby="basic-icon-default-company2" name="umur" required>
+                                </div>
+                            </div>
+                        </div>
 
-                </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 form-label" for="basic-icon-default-message">Jenis Kelamin</label>
+                            <div class="col-sm-10">
+                                <div class="input-group input-group-merge flex-nowrap gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="male" name="jenis_kelamin"
+                                            value="1" required>
+                                        <label class="form-check-label" for="male">Laki-laki</label>
+                                    </div>
+                                    <div class="form-check ">
+                                        <input class="form-check-input" type="radio" id="female" name="jenis_kelamin"
+                                            value="2" required>
+                                        <label class="form-check-label" for="female">Perempuan</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                {{-- <div class="form-group">
-                    <label for="gambar">Upload Foto</label>
-                    <input type="file" class="form-control-file" id="gambar" name="gambar">
-                </div> --}}
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Cek Hasil</button>
+                        <div class="form-group">
+                            <label for="gejala">Tanda/Gejala yang dirasakan</label>
+                            <div id="survey-container" class="survey-container">
+                                @foreach ($gejalas as $gejala)
+                                    <div class="survey-step">
+                                        <h2>{{ $gejala->nama_gejala }}</h2>
+                                        <div class="survey-options">
+                                            <button type="button" class="btn btn-primary" data-value="0">Tidak</button>
+                                            <button type="button" class="btn btn-primary" data-value="0.2">Tidak
+                                                Tahu</button>
+                                            <button type="button" class="btn btn-primary" data-value="0.4">Sedikit
+                                                Yakin</button>
+                                            <button type="button" class="btn btn-primary" data-value="0.6">Cukup
+                                                Yakin</button>
+                                            <button type="button" class="btn btn-primary" data-value="0.8">Yakin</button>
+                                            <button type="button" class="btn btn-primary" data-value="1">Sangat
+                                                Yakin</button>
+                                        </div>
+                                        <input type="hidden" name="gejala_dipilih[]" value="{{ $gejala->kode_gejala }}"
+                                            required>
+                                        <input type="hidden" name="md[{{ $gejala->kode_gejala }}]" class="selected-value"
+                                            required>
+                                    </div>
+                                @endforeach
+                                <div class="survey-footer mt-4">
+                                    <p id="prev">Kembali</p>
+                                    <span id="question-number">1 dari {{ count($gejalas) }} Pertanyaan</span>
+                                    {{-- <p id="next">Selanjutnya</p> --}}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row justify-content-end ">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary">Submit Form</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
+
+
     </section>
 
 @endsection
@@ -258,19 +347,34 @@
         prevBtn.addEventListener('click', () => {
             if (currentStep > 0) {
                 selectedValues[currentStep] = getSelectedIndex();
+                steps[currentStep].classList.add('slide-out');
                 currentStep--;
-                showStep(currentStep);
+                setTimeout(() => {
+                    showStep(currentStep);
+                }, 500); // Match the duration of your CSS animation
             }
         });
 
         buttons.forEach((button, index) => {
             button.addEventListener('click', () => {
-                buttons.forEach(btn => btn.classList.remove('selected'));
+                const parentStep = button.closest('.survey-step');
+                const stepIndex = Array.from(steps).indexOf(parentStep);
+
+                const btns = parentStep.querySelectorAll('.survey-options button');
+                btns.forEach(btn => btn.classList.remove('selected'));
                 button.classList.add('selected');
-                selectedValues[currentStep] = index;
+
+                selectedValues[stepIndex] = Array.from(btns).indexOf(button);
+                parentStep.querySelector('.selected-value').value = button.getAttribute('data-value');
+
+                if (stepIndex < steps.length - 1) {
+                    parentStep.classList.add('slide-out');
+                    setTimeout(() => {
+                        currentStep++;
+                        showStep(currentStep);
+                    }, 500); // Match the duration of your CSS animation
+                }
             });
-
-
         });
 
         function getSelectedIndex() {
@@ -278,40 +382,29 @@
             return Array.from(buttons).indexOf(selectedButton);
         }
 
-        steps.forEach(step => {
-            const buttons = step.querySelectorAll('.survey-options button');
-            const hiddenInput = step.querySelector('.selected-value');
-
-            buttons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const value = button.getAttribute('data-value');
-
-                    // Remove 'selected' class from all buttons in the group
-                    buttons.forEach(btn => btn.classList.remove('selected'));
-
-                    // Add 'selected' class to the clicked button
-                    button.classList.add('selected');
-
-                    // Set the value to the hidden input
-                    hiddenInput.value = value;
-
-                    // next if selected
-                    const selectedButton = step.querySelector('.survey-options button.selected');
-                    if (selectedButton !== null) {
-                        if (currentStep < steps.length - 1) {
-                            selectedValues[currentStep] = getSelectedIndex();
-                            currentStep++;
-                            showStep(currentStep);
-                        }
+        function showStep(step) {
+            steps.forEach((stepDiv, index) => {
+                stepDiv.classList.remove('active', 'slide-in', 'slide-out');
+                if (index === step) {
+                    stepDiv.classList.add('active', 'slide-in');
+                    if (selectedValues[index] !== null) {
+                        const btns = stepDiv.querySelectorAll('.survey-options button');
+                        btns.forEach((btn, btnIndex) => {
+                            if (btnIndex === selectedValues[index]) {
+                                btn.classList.add('selected');
+                            } else {
+                                btn.classList.remove('selected');
+                            }
+                        });
                     } else {
-                        alert("Pilih tingkat gejala terlebih dahulu.");
+                        stepDiv.querySelectorAll('.survey-options button').forEach(btn => btn.classList.remove(
+                            'selected'));
                     }
-                });
-
+                }
             });
 
-
-        });
+            questionNumber.textContent = `${step + 1} dari ${steps.length} Pertanyaan`;
+        }
 
         showStep(currentStep);
     </script>

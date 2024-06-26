@@ -1,3 +1,15 @@
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+    <div class="container-fluid">
+        <!-- Navbar brand/logo -->
+        <a class="navbar-brand" href="#">EyeQ</a>
+
+        <!-- Hamburger menu icon -->
+        <button class="navbar-toggler" type="button" id="navbar-toggler">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
 <aside id="sidebar">
     <div class="d-flex align-items-center">
         <button class="toggle-btn" type="button">
@@ -66,12 +78,12 @@
         </li> --}}
 
     </ul>
-    <div class="sidebar-footer">
+    {{-- <div class="sidebar-footer">
         <a href="#" class="sidebar-link">
             <i class="lni lni-exit"></i>
             <span>Logout</span>
         </a>
-    </div>
+    </div> --}}
 </aside>
 
 
