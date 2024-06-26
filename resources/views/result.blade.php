@@ -84,7 +84,22 @@
 
             @include('components.' . $pasien->nama_penyakit)
 
-        </div>
+            <div>
+                <h2>Hu Moment</h2>
+                <img id="originalImage" src="{{ asset($pasien->gambar) }}" style="width: 500px;">
+                @if ($huMomentsPath)
+                <img id="huMomentsImage" src="{{ asset($huMomentsPath) }}">
+                @endif
+            </div>
+
+            <div>
+            <h2>Texture Parameters</h2>
+                <p>Mean: {{ $mean }}</p>
+                <p>Standard Deviation: {{ $std_dev }}</p>
+                <p>Smoothness: {{ $smoothness }}</p>
+                <p>Uniformity: {{ $uniformity }}</p>
+                <p>Entropy: {{ $entropy }}</p>
+            </div>
 
         </div>
     </section>

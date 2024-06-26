@@ -209,10 +209,9 @@ class DiagnosisController extends Controller
         $imagePath = $pasien->gambar;
         $patient_name  = $pasien->nama;
 
-        // Jalankan skrip Python untuk prediksi dan visualisasi HOG
-        $command = ['python', 'python/main.py', $imagePath, $patient_name];
         // Jalankan skrip Python untuk prediksi dan visualisasi hu moment
-        $command1 = ['python', 'python/humoment.py', $imagePath, $patient_name];
+        $command = ['python', 'python/humoment.py', $imagePath, $patient_name];
+        $command1 = ['python', 'python/statistikimage.py', $imagePath, $patient_name];
 
         $process = new Process($command);
         $process1 = new Process($command1);
@@ -224,43 +223,50 @@ class DiagnosisController extends Controller
             throw new ProcessFailedException($process);
         }
         if (!$process1->isSuccessful()) {
-            throw new ProcessFailedException($process1);
+            throw new ProcessFailedException($process);
         }
 
-        // Ambil output dari proses Python
-        $output = $process->getOutput();
-        // dd($output);
-        $output1 = $process1->getOutput();
-        // dd($output1);
 
-        $predictedLabel = '';
-        $predictedLabelHu = '';
-        $hogImagePath = '';
+        $output = $process->getOutput();
+        $output1 = $process1->getOutput();
+
         $huMomentsPath = '';
 
-        // Parse output from $output (assuming it contains HOG image path and predicted label)
+        $mean = '';
+        $std_dev = '';
+        $smoothness = '';
+        $uniformity = '';
+        $entropy = '';
+
+
+        // Handle output from $output1 (assuming it contains Hu moments path and predicted label)
         $lines = explode("\n", trim($output));
         foreach ($lines as $line) {
             if (strpos($line, 'Predicted Label:') !== false) {
-                $predictedLabel = str_replace('Predicted Label:', '', $line);
-            } elseif (strpos($line, 'HOG Image Path:') !== false) {
-                $hogImagePath = str_replace('HOG Image Path:', '', $line);
-                $hogImagePath = trim($hogImagePath); // Trim untuk menghilangkan spasi
-            }
-        }
-
-        // Handle output from $output1 (assuming it contains Hu moments path and predicted label)
-        $lines1 = explode("\n", trim($output1));
-        foreach ($lines1 as $line) {
-            if (strpos($line, 'Predicted Label:') !== false) {
-                $predictedLabelHu = str_replace('Predicted Label:', '', $line);
+                // $predictedLabelHu = str_replace('Predicted Label:', '', $line);
             } elseif (strpos($line, 'Hu Moments Path:') !== false) {
                 $huMomentsPath = str_replace('Hu Moments Path:', '', $line);
                 $huMomentsPath = trim($huMomentsPath); // Trim untuk menghilangkan spasi
             }
         }
 
+        // Ambil output dari skrip Python
+        $lines1 = explode("\n", trim($output1));
+        foreach ($lines1 as $line) {
+            if (strpos($line, 'Mean:') !== false) {
+                $mean = trim(str_replace('Mean:', '', $line));
+            } elseif (strpos($line, 'Standard Deviation:') !== false) {
+                $std_dev = trim(str_replace('Standard Deviation:', '', $line));
+            } elseif (strpos($line, 'Smoothness:') !== false) {
+                $smoothness = trim(str_replace('Smoothness:', '', $line));
+            } elseif (strpos($line, 'Uniformity:') !== false) {
+                $uniformity = trim(str_replace('Uniformity:', '', $line));
+            } elseif (strpos($line, 'Entropy:') !== false) {
+                $entropy = trim(str_replace('Entropy:', '', $line));
+            }
+        }
+
         // Pass data to the view
-        return view('result', compact('pasien', 'penyakitData', 'nama_gejala', 'predictedLabel', 'hogImagePath', 'predictedLabelHu', 'huMomentsPath'));
+        return view('result', compact('pasien', 'penyakitData', 'nama_gejala', 'huMomentsPath', 'mean', 'std_dev', 'smoothness', 'uniformity', 'entropy'));
     }
 }
