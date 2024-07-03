@@ -82,26 +82,67 @@
                 </div>
             </div>
 
-            @include('components.' . $pasien->nama_penyakit)
-
-            <div>
+            <div class="container py-5 mb-5">
                 <h2>Hu Moment</h2>
-                <img id="originalImage" src="{{ asset($pasien->gambar) }}" style="width: 500px;">
-                @if ($huMomentsPath)
-                <img id="huMomentsImage" src="{{ asset($huMomentsPath) }}">
-                @endif
-            </div>
+                <div class="image-container d-flex justify-content-center align-item-center mb-3">
+                    <div class="col">
+                        <img id="originalImage" src="{{ asset($pasien->gambar) }}" style="width: 500px;">
+                    </div>
+                    @if ($huMomentsPath)
+                        <div class="col">
+                            <img id="huMomentsImage" src="{{ asset($huMomentsPath) }}">
+                        </div>
+                    @endif
+                </div>
 
-            <div>
-            <h2>Texture Parameters</h2>
-                <p>Mean: {{ $mean }}</p>
-                <p>Standard Deviation: {{ $std_dev }}</p>
-                <p>Smoothness: {{ $smoothness }}</p>
-                <p>Uniformity: {{ $uniformity }}</p>
-                <p>Entropy: {{ $entropy }}</p>
+
+                <div class="mb-3">
+                    <h2>Texture Parameters</h2>
+
+                    <table class="table table-hover">
+                        <thead>
+                            <tr class="table-dark">
+                                <th scope="col">No</th>
+                                <th scope="col">Parameter</th>
+                                <th scope="col">Hasil</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mean</td>
+                                <td>{{ $mean }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>Standart Deviation</td>
+                                <td>{{$std_dev}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td>Smoothness</td>
+                                <td>{{$smoothness}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">4</th>
+                                <td>Uniformity</td>
+                                <td>{{$uniformity}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">5</th>
+                                <td>Entropy</td>
+                                <td>{{$entropy}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
+
+        @include('components.' . $pasien->nama_penyakit)
+
+
     </section>
 @endsection
 
@@ -228,6 +269,5 @@
             border-radius: 50px;
             padding: 5px 10px;
         }
-
     </style>
 @endsection

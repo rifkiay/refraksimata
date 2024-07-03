@@ -144,6 +144,56 @@
             animation: slideOut 0.5s ease-in-out forwards;
         }
 
+        .form-control,
+        .thumbnail {
+            border-radius: 2px;
+        }
+
+        .btn-danger {
+            background-color: #B73333;
+        }
+
+        /* File Upload */
+        .fake-shadow {
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .fileUpload {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fileUpload #logo-id {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 33px;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+        .main-img-preview{
+            border: 4px dashed #ccc;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .img-preview {
+            min-width: 200px;
+            max-width: 350px;
+            height: auto;
+        }
+
+        .main-img-preview {
+            margin-bottom: 15px;
+        }
+
+        .help-block {
+            margin-top: 10px;
+        }
+
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -281,11 +331,36 @@
 
                         </div>
 
+                        <div class="form-image d-flex justify-content-center align-items-center">
+                            <div class="col-md-6 col-md-offset-3">
+                                <div class="form-group">
+                                    <label for="logo-id">Upload Foto Mata</label>
+                                    <div class="main-img-preview text-center mt-3">
+                                        <img class="thumbnail img-preview"
+                                            src="{{ asset('images/add_a_photo_outlined.svg') }}" title="Preview Logo">
+                                    </div>
+                                    <div class="input-group">
+                                        <input id="fakeUploadLogo" class="form-control fake-shadow"
+                                            placeholder="Choose File" disabled="disabled">
+                                        <div class="input-group-btn">
+                                            <div class="fileUpload btn btn-danger fake-shadow">
+                                                <span><i class="glyphicon glyphicon-upload"></i>Upload Foto</span>
+                                                <input id="logo-id" name="gambar" type="file"
+                                                    class="attachment_upload">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="help-block">* Upload Foto Mata Kamu Dengan Dekat | <b>Opsional</b>.</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row justify-content-end ">
                             <div class="col-sm-10">
                                 <button type="submit" class="btn btn-primary">Submit Form</button>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -407,6 +482,30 @@
         }
 
         showStep(currentStep);
+
+
+        $(document).ready(function() {
+            var brand = document.getElementById('logo-id');
+            brand.className = 'attachment_upload';
+            brand.onchange = function() {
+                document.getElementById('fakeUploadLogo').value = this.value.substring(12);
+            };
+
+            // Source: http://stackoverflow.com/a/4459419/6396981
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        $('.img-preview').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $("#logo-id").change(function() {
+                readURL(this);
+            });
+        });
     </script>
 
 
