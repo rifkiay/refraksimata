@@ -16,12 +16,12 @@
             <i class="lni lni-grid-alt"></i>
         </button>
         <div class="sidebar-logo">
-            <a href="/dashboard">EyeQ</a>
+            <a href="/">EyeQ</a>
         </div>
     </div>
     <ul class="sidebar-nav">
         <li class="sidebar-item">
-            <a href="/dashboard" class="sidebar-link">
+            <a href="/" class="sidebar-link">
                 <i class="lni lni-home"></i>
                 <span>Dashboard</span>
             </a>
